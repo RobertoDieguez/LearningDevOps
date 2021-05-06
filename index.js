@@ -6,8 +6,9 @@ const { response } = require("express");
 
 const app = express();
 
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 3000;
-
+// eslint-disable-next-line no-undef
 const REDIS = process.env.REDIS || "localhost";
 
 const redisClient = redis.createClient(6379, { host: REDIS });

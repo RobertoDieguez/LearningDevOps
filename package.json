@@ -6,6 +6,7 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "eslint index.js",
       "commit-lint": {
         "extends": [
           "@commit-lint/config-conventional"
@@ -31,7 +32,10 @@
   "devDependencies": {
     "@commitlint/cli": "^12.1.1",
     "@commitlint/config-conventional": "^12.1.1",
+    "eslint": "^7.25.0",
     "husky": "^6.0.0",
-    "standard-version": "^9.3.0"
+    "jest": "^26.6.3",
+    "standard-version": "^9.3.0",
+    "supertest": "^6.1.3"
   }
 }
