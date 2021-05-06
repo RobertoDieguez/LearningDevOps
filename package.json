@@ -1,6 +1,6 @@
 {
   "name": "learningdevops",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Learning devops tools: docker, terraform ,gcp (and built a caching layer with redis)",
   "main": "index.js",
   "husky": {
@@ -16,7 +16,8 @@
   "scripts": {
     "dev": "PORT=3000 REDIS='localhost' nodemon index.js",
     "prod": "PORT=4000 REDIS='redis' nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "standard-version"
   },
   "author": "",
   "license": "ISC",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@commitlint/cli": "^12.1.1",
     "@commitlint/config-conventional": "^12.1.1",
-    "husky": "^6.0.0"
+    "husky": "^6.0.0",
+    "standard-version": "^9.3.0"
   }
 }
