@@ -15,8 +15,8 @@
     }
   },
   "scripts": {
-    "dev": "PORT=3000 REDIS='localhost' nodemon index.js",
-    "prod": "PORT=4000 REDIS='redis' nodemon index.js",
+    "dev": "PORT=3000 REDIS='redis' docker compose up",
+    "prod": "PORT=4000 REDISHOST='10.175.16.3' REDISPORT=6379 nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "release": "standard-version"
   },
