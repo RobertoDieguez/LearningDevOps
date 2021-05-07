@@ -2,14 +2,7 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     id: "Building image"
     args:
-      [
-        "build",
-        ".",
-        "-name",
-        "learningdevops",
-        "-t",
-        "gcr.io/fluent-radar-310019/learningdevops:latest",
-      ]
+      ["build", ".", "-t", "gcr.io/fluent-radar-310019/learningdevops:latest"]
   - name: "gcr.io/cloud-builders/docker"
     id: "Pushing Image to Container Registry"
     args: ["push", "gcr.io/fluent-radar-310019/learningdevops:latest"]
