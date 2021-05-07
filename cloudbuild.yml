@@ -1,4 +1,4 @@
 steps:
-  - name: "gcr.io/cloud-builders/docker"
+  - name: "gcr.io/cloud-builders/docker/compose:1.19.0"
     args: ["compose", "up"]
-  - images: ["learningdevops_web", "redis"]
+images: ["learningdevops_web", "redis"]
