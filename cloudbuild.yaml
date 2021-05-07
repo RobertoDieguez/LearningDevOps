@@ -5,7 +5,7 @@ steps:
       [
         "build",
         ".",
-        "--name",
+        "-name",
         "learningdevops",
         "-t",
         "gcr.io/fluent-radar-310019/learningdevops:latest",
