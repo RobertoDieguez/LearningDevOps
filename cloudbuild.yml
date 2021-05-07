@@ -1,0 +1,4 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["compose", "up"]
+  - images: ["learningdevops_web", "redis"]
