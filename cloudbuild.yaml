@@ -1,4 +1,5 @@
 steps:
   - name: "gcr.io/cloud-builders/docker"
-    args: ["build", ".", "-t", "learningdevops:latest"]
-images: ["learningdevops:latest"]
+    args:
+      ["build", ".", "-t", "gcr.io/fluent-radar-310019/learningdevops:latest"]
+images: ["gcr.io/fluent-radar-310019/learningdevops:latest"]]
