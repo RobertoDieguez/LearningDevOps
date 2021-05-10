@@ -39,10 +39,10 @@ app.get("/", async (req, res) => {
   const response = await axios.get(`${API}/posts`);
   console.log("data retrieved from API");
   if (redisClient) {
-    redisClient.setex("posts", 30, response.data);
+    redisClient.setex("posts", 30, JSON.stringify(response.data));
     console.log("caching response to redis");
   }
-  res.status(200).send(response);
+  res.status(200).send(response.data);
 });
 
 app.get("/:id", async (req, res) => {
