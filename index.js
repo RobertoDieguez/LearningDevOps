@@ -14,6 +14,13 @@ const REDISPORT = process.env.REDISPORT || 6379;
 
 const redisClient = redis.createClient(REDISPORT, {
   host: REDISHOST,
+  retry_strategy: ({ attempt, total_retry_time, times_connected, error }) => {
+    console.log(
+      `Connection to Redis failed - error: ${error} - time passed since last connection: ${total_retry_time} - times connected: ${times_connected} - attempts to connect: ${attempt}`
+    );
+    console.log("Retying to connect to Redis in 1 minute");
+    return 60000;
+  },
 });
 redisClient.on("error", (e) => {
   console.log("Failed connecting to redis server");
