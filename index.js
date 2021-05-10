@@ -26,47 +26,80 @@ app.use(cors());
 
 app.get("/", async (req, res) => {
   if (redisClient) {
+    let parsedData;
     redisClient.get("posts", (err, data) => {
-      if (err)
-        return console.log("Failed to retrieved data from Redis, Calling API");
+      if (err) console.log("Failed to retrieved data from Redis, Calling API");
 
       if (data) {
         console.log("data retrieved from redis");
-        return res.status(200).send(JSON.parse(data));
+        parsedData = JSON.parse(data);
       }
     });
+    if (parsedData) {
+      return res.status(200).send(parsedData);
+    }
   }
-  const response = await axios.get(`${API}/posts`);
-  console.log("data retrieved from API");
-  if (redisClient) {
-    redisClient.setex("posts", 30, JSON.stringify(response.data));
-    console.log("caching response to redis");
+  try {
+    const response = await axios.get(`${API}/posts`);
+    console.log("data retrieved from API");
+    if (redisClient) {
+      redisClient.setex("posts", 30, JSON.stringify(response.data), (err) => {
+        if (err) {
+          console.log("Failed caching response to redis");
+          console.log(`error: ${err}`);
+          return;
+        }
+        console.log("Cached response to redis");
+      });
+    }
+    res.status(200).send(response.data);
+  } catch (e) {
+    console.log(`error: ${e.message}`);
+    res.status(500).send("something went wrong");
   }
-  res.status(200).send(response.data);
 });
 
 app.get("/:id", async (req, res) => {
   const { params } = req;
   const { id } = params;
   if (redisClient) {
+    let parsedData;
     redisClient.get(`post-${id}`, (err, data) => {
-      if (err)
-        return console.log("Failed to retrieved data from Redis, Calling API");
+      if (err) console.log("Failed to retrieved data from Redis, Calling API");
 
       if (data) {
         console.log(`Post ${id} retrieved from redis`);
-        return res.status(200).send(JSON.parse(data));
+        parsedData = JSON.parse(data);
       }
     });
+    if (parsedData) {
+      return res.status(200).send(parsedData);
+    }
   }
 
-  const response = await axios.get(`${API}/posts/${id}`);
-  console.log(`retrieved post ${id} from API`);
-  if (redisClient) {
-    redisClient.setex(`post-${id}`, 30, JSON.stringify(response.data));
-    console.log("Caching response to redis");
+  try {
+    const response = await axios.get(`${API}/posts/${id}`);
+    console.log(`retrieved post ${id} from API`);
+    if (redisClient) {
+      redisClient.setex(
+        `post-${id}`,
+        30,
+        JSON.stringify(response.data),
+        (err) => {
+          if (err) {
+            console.log("Failed caching response to redis");
+            console.log(`error: ${err}`);
+            return;
+          }
+          console.log("Cached response to redis");
+        }
+      );
+    }
+    res.status(200).send(response.data);
+  } catch (e) {
+    console.log(`error: ${e.message}`);
+    res.status(500).send("something went wrong");
   }
-  res.status(200).send(response.data);
 });
 
 app.use((req, res) => res.status(400).send("NotFOund"));
