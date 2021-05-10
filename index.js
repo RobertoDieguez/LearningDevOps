@@ -14,7 +14,6 @@ const REDISPORT = process.env.REDISPORT || 6379;
 
 const redisClient = redis.createClient(REDISPORT, {
   host: REDISHOST,
-  connect_timeout: 3000,
 });
 redisClient.on("error", () => {
   console.log("Failed connecting to redis server");
