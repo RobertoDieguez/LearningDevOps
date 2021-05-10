@@ -15,8 +15,9 @@ const REDISPORT = process.env.REDISPORT || 6379;
 const redisClient = redis.createClient(REDISPORT, {
   host: REDISHOST,
 });
-redisClient.on("error", () => {
+redisClient.on("error", (e) => {
   console.log("Failed connecting to redis server");
+  console.log("ERROR: " + e);
 });
 
 const API = "https://jsonplaceholder.typicode.com";
