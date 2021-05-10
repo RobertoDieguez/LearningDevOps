@@ -2,6 +2,7 @@ version: "3.9"
 services:
   web:
     build: .
+    environment: ["REDISHOST=redis", "REDISPORT=6379", "PORT=4000"]
     ports:
       - 3000:4000
   redis:

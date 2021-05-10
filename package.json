@@ -15,8 +15,8 @@
     }
   },
   "scripts": {
-    "dev": "PORT=3000 REDIS='redis' docker compose up",
-    "prod": "node index.js",
+    "dev": "docker compose up",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "release": "standard-version"
   },
