@@ -22,89 +22,43 @@ const redisClient = redis.createClient(REDISPORT, {
     return 60000;
   },
 });
-redisClient.on("error", (e) => {
-  console.log("Failed connecting to redis server");
-  console.log("ERROR: " + e);
-});
 
 const API = "https://jsonplaceholder.typicode.com";
 
 app.use(cors());
 
-app.get("/", async (req, res) => {
-  if (redisClient) {
-    let parsedData;
-    redisClient.get("posts", (err, data) => {
-      if (err) console.log("Failed to retrieved data from Redis, Calling API");
-
-      if (data) {
-        console.log("data retrieved from redis");
-        parsedData = JSON.parse(data);
-      }
-    });
-    if (parsedData) {
-      return res.status(200).send(parsedData);
-    }
-  }
-  try {
-    const response = await axios.get(`${API}/posts`);
-    console.log("data retrieved from API");
-    if (redisClient) {
-      redisClient.setex("posts", 30, JSON.stringify(response.data), (err) => {
-        if (err) {
-          console.log("Failed caching response to redis");
-          console.log(`error: ${err}`);
-          return;
-        }
-        console.log("Cached response to redis");
-      });
-    }
-    res.status(200).send(response.data);
-  } catch (e) {
-    console.log(`error: ${e.message}`);
-    res.status(500).send("something went wrong");
-  }
+app.get("/", (req, res) => {
+  res.status(200).send("main endpoint: /posts/:id");
 });
 
-app.get("/:id", async (req, res) => {
+app.get("/:id", (req, res) => {
   const { params } = req;
   const { id } = params;
-  if (redisClient) {
-    let parsedData;
-    redisClient.get(`post-${id}`, (err, data) => {
-      if (err) console.log("Failed to retrieved data from Redis, Calling API");
-
-      if (data) {
-        console.log(`Post ${id} retrieved from redis`);
-        parsedData = JSON.parse(data);
-      }
-    });
-    if (parsedData) {
-      return res.status(200).send(parsedData);
-    }
-  }
 
   try {
-    const response = await axios.get(`${API}/posts/${id}`);
-    console.log(`retrieved post ${id} from API`);
-    if (redisClient) {
-      redisClient.setex(
-        `post-${id}`,
-        30,
-        JSON.stringify(response.data),
-        (err) => {
-          if (err) {
-            console.log("Failed caching response to redis");
-            console.log(`error: ${err}`);
-            return;
-          }
-          console.log("Cached response to redis");
+    redisClient.get(`post-${id}`, async (err, val) => {
+      if (err) throw new Error(err);
+      if (val) {
+        const parsedData = JSON.parse(val);
+        console.log("data retrieved from redis");
+        res.status(200).send(parsedData);
+      } else {
+        console.log("no data in redis, calling API");
+        const response = await axios.get(`${API}/posts/${id}`);
+        const data = response.data;
+        if (data) {
+          console.log("data retrieved from API");
+          redisClient.setex(`post-${id}`, 30, JSON.stringify(data), (err) => {
+            if (err)
+              return console.log("Could not cache response to redis", err);
+            console.log("cached response to redis");
+          });
+          return res.status(200).send(data);
         }
-      );
-    }
-    res.status(200).send(response.data);
+      }
+    });
   } catch (e) {
-    console.log(`error: ${e.message}`);
+    console.log(e);
     res.status(500).send("something went wrong");
   }
 });
