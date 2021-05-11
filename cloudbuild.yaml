@@ -19,6 +19,6 @@ steps:
         "--port=4000",
         "--region=us-east1",
         "--vpc-connector=redis-connector",
-        "--set-env-vars=[REDISPORT=6379, REDISHOST=10.112.77.75 ]",
+        "--set-env-vars=REDISPORT=6379,REDISHOST=10.112.77.75",
         "--allow-unauthenticated",
       ]
